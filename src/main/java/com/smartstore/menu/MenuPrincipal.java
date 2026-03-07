@@ -22,7 +22,7 @@ public class MenuPrincipal {
                 case "produtos":
                 case "1":
                     System.out.println("Entrando no Menu Produtos...");
-                    // MenuProdutos.iniciar();
+                    MenuProdutos.iniciar();
                     break;
                 case "relatório":
                 case "relatorio":
