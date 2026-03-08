@@ -44,7 +44,7 @@ public class MenuProdutos {
                 case "listar":
                 case "listar todos":
                 case "5":
-                    System.out.println("Listar todos os produtos");
+                    LojaManager.listarProdutos();
                     break;
                 case "exibir um":
                 case "6":
