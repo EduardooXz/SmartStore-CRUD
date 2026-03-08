@@ -98,6 +98,7 @@ public class MenuProdutos {
                 System.out.println("Nome: " + produto.getNome());
                 System.out.println("Preço: " + produto.getPreco());
                 System.out.println("Quantidade: " + produto.getEstoque());
+                System.out.println("Categoria: " + produto.getCategoria().getNome());
                 System.out.println("-------------------------");
             }
         }

@@ -2,6 +2,7 @@ package com.smartstore.service;
 
 import com.smartstore.database.Conexao;
 import com.smartstore.model.Produto;
+import com.smartstore.model.Categoria;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class LojaManager {
     public static List<Produto> listarProdutos() {
 
         List<Produto> produtos = new ArrayList<>();
-        String sql = "SELECT * FROM produto";
+        String sql = "SELECT p.id, p.nome, p.preco, p.quantidade, c.id AS categoria_id, c.nome AS categoria_nome " +
+                "FROM produto p JOIN categoria c ON p.idcategoria = c.id";
 
         try (Connection conn = Conexao.conexaoBD();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -42,7 +44,13 @@ public class LojaManager {
                 produto.setPreco(rs.getDouble("preco"));
                 produto.setEstoque(rs.getInt("quantidade"));
 
+                Categoria categoria = new Categoria();
+                categoria.setId(rs.getLong("categoria_id"));
+                categoria.setNome(rs.getString("categoria_nome"));
+
                 produtos.add(produto);
+                produto.setCategoria(categoria);
+
             }
 
         } catch (SQLException e) {
