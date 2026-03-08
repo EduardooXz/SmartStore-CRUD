@@ -1,5 +1,10 @@
 package com.smartstore.menu;
 
+import com.smartstore.model.Categoria;
+import com.smartstore.model.Produto;
+import com.smartstore.service.CategoriaManager;
+import com.smartstore.service.LojaManager;
+
 import java.util.Scanner;
 
 public class MenuProdutos {
@@ -21,7 +26,8 @@ public class MenuProdutos {
             switch (escolha) {
                 case "inserir":
                 case "1":
-                    System.out.println("Cadastrar Produto");
+                    menuCadastrarProduto();
+                    System.out.println("\nProduto cadastrado");
                     break;
                 case "alterar":
                 case "2":
@@ -52,5 +58,28 @@ public class MenuProdutos {
                     System.out.println("Opção inválida. Tente novamente.\n");
             }
         }
+    }
+
+    public static void menuCadastrarProduto() {
+        System.out.println("\n====== CADASTRAR PRODUTO ======");
+        System.out.print("Nome do produto: ");
+        String nome = sc.nextLine();
+        System.out.print("Preço: ");
+        double preco = Double.parseDouble(sc.nextLine());
+        System.out.print("Estoque: ");
+        int estoque = Integer.parseInt(sc.nextLine());
+        int categoriaId;
+        while (true) {
+            CategoriaManager.listarCategorias();
+            System.out.print("Escolha o ID da categoria: ");
+            categoriaId = Integer.parseInt(sc.nextLine());
+            if (CategoriaManager.categoriaExiste(categoriaId)) {
+                break;
+            }
+            System.out.println("Categoria inválida.");
+        }
+        Categoria categoria = CategoriaManager.buscarCategoriaPorId(categoriaId);
+        Produto produto = new Produto(nome, preco, categoria, estoque);
+        LojaManager.cadastrarProduto(produto);
     }
 }
