@@ -5,6 +5,7 @@ import com.smartstore.model.Produto;
 import com.smartstore.service.CategoriaManager;
 import com.smartstore.service.LojaManager;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuProdutos {
@@ -44,7 +45,7 @@ public class MenuProdutos {
                 case "listar":
                 case "listar todos":
                 case "5":
-                    LojaManager.listarProdutos();
+                    exibirProdutos();
                     break;
                 case "exibir um":
                 case "6":
@@ -81,5 +82,80 @@ public class MenuProdutos {
         Categoria categoria = CategoriaManager.buscarCategoriaPorId(categoriaId);
         Produto produto = new Produto(nome, preco, categoria, estoque);
         LojaManager.cadastrarProduto(produto);
+    }
+
+    public static void exibirProdutos() {
+        List<Produto> produtos = LojaManager.listarProdutos();
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado.");
+            return;
+        }
+
+        int itensPorPagina = 5;
+        int paginaAtual = 0;
+        int totalPaginas = (int) Math.ceil((double) produtos.size() / itensPorPagina);
+
+        while (true) {
+            int inicio = paginaAtual * itensPorPagina;
+            int fim = Math.min(inicio + itensPorPagina, produtos.size());
+
+            System.out.println("\n==================== LISTA DE PRODUTOS ====================");
+            System.out.println("Página " + (paginaAtual + 1) + " de " + totalPaginas);
+            System.out.println("+----+----------------------+------------+----------+----------------+");
+            System.out.printf("| %-2s | %-20s | %-10s | %-8s | %-14s |%n",
+                    "ID", "NOME", "PREÇO", "ESTOQUE", "CATEGORIA");
+            System.out.println("+----+----------------------+------------+----------+----------------+");
+
+            for (int i = inicio; i < fim; i++) {
+                Produto produto = produtos.get(i);
+
+                System.out.printf("| %-2d | %-20s | %-10.2f | %-8d | %-14s |%n",
+                        produto.getId(),
+                        limitarTexto(produto.getNome(), 20),
+                        produto.getPreco(),
+                        produto.getEstoque(),
+                        limitarTexto(produto.getCategoria().getNome(), 14));
+            }
+
+            System.out.println("+----+----------------------+------------+----------+----------------+");
+            System.out.println("[P] Próxima página | [V] Voltar página | [S] Sair");
+            System.out.print("Escolha: ");
+            String opcao = sc.nextLine().toLowerCase();
+
+            switch (opcao) {
+                case "p":
+                case "proxima":
+                    if (paginaAtual < totalPaginas - 1) {
+                        paginaAtual++;
+                    } else {
+                        System.out.println("Você já está na última página.");
+                    }
+                    break;
+
+                case "v":
+                case "voltar":
+                    if (paginaAtual > 0) {
+                        paginaAtual--;
+                    } else {
+                        System.out.println("Você já está na primeira página.");
+                    }
+                    break;
+
+                case "s":
+                case "sair":
+                    return;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    public static String limitarTexto(String texto, int limite) {
+        if (texto.length() <= limite) {
+            return texto;
+        }
+        return texto.substring(0, limite - 3) + "...";
     }
 }
