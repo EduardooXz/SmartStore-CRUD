@@ -5,6 +5,7 @@ import com.smartstore.model.Produto;
 import com.smartstore.service.CategoriaManager;
 import com.smartstore.service.LojaManager;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuProdutos {
@@ -44,7 +45,7 @@ public class MenuProdutos {
                 case "listar":
                 case "listar todos":
                 case "5":
-                    LojaManager.listarProdutos();
+                    exibirProdutos();
                     break;
                 case "exibir um":
                 case "6":
@@ -81,5 +82,25 @@ public class MenuProdutos {
         Categoria categoria = CategoriaManager.buscarCategoriaPorId(categoriaId);
         Produto produto = new Produto(nome, preco, categoria, estoque);
         LojaManager.cadastrarProduto(produto);
+    }
+
+    public static void exibirProdutos() {
+
+        List<Produto> produtos = LojaManager.listarProdutos();
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado.");
+        } else {
+            System.out.println("\n====== LISTA DE PRODUTOS =====");
+
+            for (Produto produto : produtos) {
+                System.out.println("ID: " + produto.getId());
+                System.out.println("Nome: " + produto.getNome());
+                System.out.println("Preço: " + produto.getPreco());
+                System.out.println("Quantidade: " + produto.getEstoque());
+                System.out.println("Categoria: " + produto.getCategoria().getNome());
+                System.out.println("-------------------------");
+            }
+        }
     }
 }
