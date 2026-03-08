@@ -2,22 +2,35 @@ package com.smartstore.model;
 
 public class Produto {
 
-    private int id;
+    private long id;
     private String nome;
     private double preco;
-    private String categoria;
+    private Categoria categoria;
     private int estoque;
 
-    public Produto(int id, String name, double preco, String categoria, int estoque) {
-        this.id = id;
+    public Produto() {}
+
+    public Produto(String nome, double preco, Categoria categoria, int estoque) {
         this.nome = nome;
         this.preco = preco;
         this.categoria = categoria;
         this.estoque = estoque;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public double getPreco() {
@@ -28,8 +41,20 @@ public class Produto {
         this.preco = preco;
     }
 
-    public void atualizarEstoque(int quantidade) {
-        estoque += quantidade;
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public int getEstoque() {
+        return estoque;
+    }
+
+    public void setEstoque(int estoque) {
+        this.estoque = estoque;
     }
 
     public String toString() {
