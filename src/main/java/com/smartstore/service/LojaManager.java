@@ -1,9 +1,11 @@
 package com.smartstore.service;
 
 import com.smartstore.database.Conexao;
+import com.smartstore.dto.RelatorioCategoria;
 import com.smartstore.model.Produto;
 import com.smartstore.model.Categoria;
 
+import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,35 +30,57 @@ public class LojaManager {
 }
 
     public static List<Produto> listarProdutos() {
-
         List<Produto> produtos = new ArrayList<>();
         String sql = "SELECT p.id, p.nome, p.preco, p.quantidade, c.id AS categoria_id, c.nome AS categoria_nome " +
                 "FROM produto p JOIN categoria c ON p.idcategoria = c.id";
-
         try (Connection conn = Conexao.conexaoBD();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
             while (rs.next()) {
                 Produto produto = new Produto();
                 produto.setId(rs.getLong("id"));
                 produto.setNome(rs.getString("nome"));
                 produto.setPreco(rs.getDouble("preco"));
                 produto.setEstoque(rs.getInt("quantidade"));
-
                 Categoria categoria = new Categoria();
                 categoria.setId(rs.getLong("categoria_id"));
                 categoria.setNome(rs.getString("categoria_nome"));
-
                 produtos.add(produto);
                 produto.setCategoria(categoria);
-
             }
-
         } catch (SQLException e) {
                 e.printStackTrace();
         }
-
         return produtos;
+    }
+
+    public static List<RelatorioCategoria> gerarRelatorioPorCategoria() {
+        List<RelatorioCategoria> relatorio = new ArrayList<>();
+        String sql = """
+            SELECT 
+                c.nome AS categoria,
+                COUNT(p.id) AS total_produtos,
+                SUM(p.quantidade) AS total_estoque,
+                SUM(p.preco * p.quantidade) AS valor_total
+            FROM categoria c
+            LEFT JOIN produto p ON p.idcategoria = c.id
+            GROUP BY c.id, c.nome
+        """;
+        try(Connection conn = Conexao.conexaoBD()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                RelatorioCategoria relatorioCategoria = new RelatorioCategoria(
+                        rs.getString("categoria"),
+                        rs.getInt("total_produtos"),
+                        rs.getInt("total_estoque"),
+                        rs.getDouble("valor_total")
+                );
+                relatorio.add(relatorioCategoria);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return relatorio;
     }
 }
