@@ -89,11 +89,11 @@ public class MenuProdutos {
         LojaManager.cadastrarProduto(produto);
     }
 
-    public static void exibirProdutos() {
-        List<Produto> produtos = LojaManager.listarProdutos();
-
+    private static void exibirListaPaginada(List<Produto> produtos, String titulo) {
         if (produtos.isEmpty()) {
-            System.out.println("Nenhum produto cadastrado.");
+            System.out.println("\nNenhum produto encontrado.");
+            System.out.println("Pressione Enter para voltar...");
+            sc.nextLine();
             return;
         }
 
@@ -105,7 +105,7 @@ public class MenuProdutos {
             int inicio = paginaAtual * itensPorPagina;
             int fim = Math.min(inicio + itensPorPagina, produtos.size());
 
-            System.out.println("\n==================== LISTA DE PRODUTOS ====================");
+            System.out.println("\n==================== " + titulo + " ====================");
             System.out.println("Página " + (paginaAtual + 1) + " de " + totalPaginas);
             System.out.println("+----+----------------------+------------+----------+----------------+");
             System.out.printf("| %-2s | %-20s | %-10s | %-8s | %-14s |%n",
@@ -157,6 +157,11 @@ public class MenuProdutos {
         }
     }
 
+    public static void exibirProdutos() {
+        List<Produto> produtos = LojaManager.listarProdutos();
+        exibirListaPaginada(produtos, "LISTA DE PRODUTOS");
+    }
+
     public static String limitarTexto(String texto, int limite) {
         if (texto.length() <= limite) {
             return texto;
@@ -199,17 +204,11 @@ public class MenuProdutos {
     }
 
     private static void listarPorCategoria() {
-
         TypeCategoria categoria = escolherCategoria();
 
         LojaManager lojaManager = new LojaManager();
-
         List<Produto> produtos = lojaManager.buscarPorCategoria(categoria);
 
-        for (Produto p : produtos) {
-
-            System.out.println(p);
-            System.out.println("---------------------------");
-        }
+        exibirListaPaginada(produtos, "PRODUTOS DA CATEGORIA " + categoria);
     }
 }
