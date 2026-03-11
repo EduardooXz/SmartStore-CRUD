@@ -4,12 +4,13 @@ import com.smartstore.model.Categoria;
 import com.smartstore.model.Produto;
 import com.smartstore.service.CategoriaManager;
 import com.smartstore.service.LojaManager;
+import com.smartstore.model.TypeCategoria;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class MenuProdutos {
-    private static String[] options = {"Inserir", "Alterar", "Pesquisar", "Remover", "Listar Todos", "Exibir um", "sair"};
+    private static String[] options = {"Inserir", "Alterar", "Pesquisar", "Remover", "Listar Todos", "Lista por Categoria", "Exibir um", "sair"};
     private static Scanner sc = new Scanner(System.in);
 
     public static void exibirMenu() {
@@ -47,12 +48,16 @@ public class MenuProdutos {
                 case "5":
                     exibirProdutos();
                     break;
-                case "exibir um":
+                case "listar por categoria":
                 case "6":
+                    listarPorCategoria();
+                    break;
+                case "exibir um":
+                case "7":
                     System.out.println("Exibir um produto");
                     break;
                 case "sair":
-                case "7":
+                case "8":
                     System.out.println("Saindo...");
                     return;
                 default:
@@ -157,5 +162,54 @@ public class MenuProdutos {
             return texto;
         }
         return texto.substring(0, limite - 3) + "...";
+    }
+
+    private static TypeCategoria escolherCategoria() {
+
+        System.out.println("Escolha a categoria:");
+
+        System.out.println("1 - ELETRONICOS");
+        System.out.println("2 - ALIMENTOS");
+        System.out.println("3 - ROUPAS");
+        System.out.println("4 - LIMPEZA");
+        System.out.println("5 - PAPELARIA");
+
+        int opcao = Integer.parseInt(sc.nextLine());
+
+        switch (opcao) {
+
+            case 1:
+                return TypeCategoria.ELETRONICOS;
+
+            case 2:
+                return TypeCategoria.ALIMENTOS;
+
+            case 3:
+                return TypeCategoria.ROUPAS;
+
+            case 4:
+                return TypeCategoria.LIMPEZA;
+
+            case 5:
+                return TypeCategoria.PAPELARIA;
+
+            default:
+                throw new IllegalArgumentException("Categoria inválida");
+        }
+    }
+
+    private static void listarPorCategoria() {
+
+        TypeCategoria categoria = escolherCategoria();
+
+        LojaManager lojaManager = new LojaManager();
+
+        List<Produto> produtos = lojaManager.buscarPorCategoria(categoria);
+
+        for (Produto p : produtos) {
+
+            System.out.println(p);
+            System.out.println("---------------------------");
+        }
     }
 }

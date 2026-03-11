@@ -4,7 +4,9 @@ import com.smartstore.database.Conexao;
 import com.smartstore.dto.RelatorioCategoria;
 import com.smartstore.model.Produto;
 import com.smartstore.model.Categoria;
+import com.smartstore.model.TypeCategoria;
 
+import java.sql.*;
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -82,5 +84,49 @@ public class LojaManager {
             e.printStackTrace();
         }
         return relatorio;
+    }
+
+    public List<Produto> buscarPorCategoria(TypeCategoria categoriaTipo) {
+
+        List<Produto> produtos = new ArrayList<>();
+
+        String sql = """
+        SELECT p.id, p.nome, p.preco, p.quantidade,
+               c.id as categoria_id, c.nome as categoria_nome
+        FROM produto p
+        INNER JOIN categoria c ON c.id = p.idcategoria
+        WHERE c.nome = ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, categoriaTipo.name());
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                Categoria categoria = new Categoria(
+                        rs.getLong("categoria_id"),
+                        rs.getString("categoria_nome")
+                );
+
+                Produto produto = new Produto();
+
+                produto.setId(rs.getLong("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setPreco(rs.getDouble("preco"));
+                produto.setEstoque(rs.getInt("quantidade"));
+                produto.setCategoria(categoria);
+
+                produtos.add(produto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return produtos;
     }
 }
