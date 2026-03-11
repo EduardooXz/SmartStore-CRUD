@@ -1,4 +1,8 @@
 package com.smartstore.menu;
+import com.smartstore.dto.RelatorioCategoria;
+import com.smartstore.service.LojaManager;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuPrincipal {
@@ -27,7 +31,7 @@ public class MenuPrincipal {
                 case "relatório":
                 case "relatorio":
                 case "2":
-                    System.out.println("Entrando no Menu Relatório...");
+                    exibirRelatorio();
                     break;
                 case "sair":
                 case "3":
@@ -37,5 +41,26 @@ public class MenuPrincipal {
                     System.out.println("Opção inválida. Tente novamente.\n");
             }
         }
+    }
+
+    public static void exibirRelatorio() {
+        System.out.println("=========== RELATÓRIO DE ESTOQUE ===========\n");
+        int totalProdutos = 0, totalEstoque = 0;
+        double totalValor = 0;
+        List<RelatorioCategoria> relatorioCategorias = LojaManager.gerarRelatorioPorCategoria();
+        for(RelatorioCategoria relatorio : relatorioCategorias) {
+            System.out.println("Categoria: " + relatorio.getCategoria());
+            System.out.println("Produtos cadastrados: " + relatorio.getTotalProduto());
+            System.out.println("Quantidade em estoque: " + relatorio.getTotalEstoque());
+            System.out.printf("Valor total: R$ %.2f\n", relatorio.getValorTotal());
+            System.out.println("----------------------");
+            totalProdutos += relatorio.getTotalProduto();
+            totalEstoque += relatorio.getTotalEstoque();
+            totalValor += relatorio.getValorTotal();
+        }
+        System.out.println("\n====== RESUMO GERAL ======");
+        System.out.println("Total de produtos cadastrados: " + totalProdutos);
+        System.out.println("Total em estoque: " + totalEstoque);
+        System.out.printf("Valor total do estoque: R$ %.2f\n", totalValor);
     }
 }
