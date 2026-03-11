@@ -61,7 +61,7 @@ public class Produto {
         return "ID: " + id +
                 "\nNome: " + nome +
                 "\nPreço: " + preco +
-                "\nCategoria: " + categoria +
+                "\nCategoria: " + categoria.getNome() +
                 "\nEstoque: " + estoque;
     }
 }
