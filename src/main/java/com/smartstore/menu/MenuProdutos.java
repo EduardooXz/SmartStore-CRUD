@@ -46,11 +46,13 @@ public class MenuProdutos {
                 case "listar":
                 case "listar todos":
                 case "5":
-                    exibirProdutos();
+                    String listar_todos = "listar todos";
+                    exibirProdutos(listar_todos);
                     break;
                 case "listar por categoria":
                 case "6":
-                    listarPorCategoria();
+                    String lista_categoria = "listar categoria";
+                    listarPorCategoria(lista_categoria);
                     break;
                 case "exibir um":
                 case "7":
@@ -89,18 +91,15 @@ public class MenuProdutos {
         LojaManager.cadastrarProduto(produto);
     }
 
-    private static void exibirListaPaginada(List<Produto> produtos, String titulo) {
+    private static void exibirListaPaginada(List<Produto> produtos, String titulo, String modo) {
         if (produtos.isEmpty()) {
             System.out.println("\nNenhum produto encontrado.");
             System.out.println("Pressione Enter para voltar...");
             sc.nextLine();
             return;
-        }
-
-        int itensPorPagina = 5;
+        }int itensPorPagina = 5;
         int paginaAtual = 0;
         int totalPaginas = (int) Math.ceil((double) produtos.size() / itensPorPagina);
-
         while (true) {
             int inicio = paginaAtual * itensPorPagina;
             int fim = Math.min(inicio + itensPorPagina, produtos.size());
@@ -122,12 +121,14 @@ public class MenuProdutos {
                         produto.getEstoque(),
                         limitarTexto(produto.getCategoria().getNome(), 14));
             }
-
             System.out.println("+----+----------------------+------------+----------+----------------+");
-            System.out.println("[P] Próxima página | [V] Voltar página | [S] Sair");
+            if(modo.equals("remover")) {
+                System.out.println("[P] Próxima página | [V] Voltar página | [E] Excluir | [S] Sair");
+            } else {
+                System.out.println("[P] Próxima página | [V] Voltar página | [S] Sair");
+            }
             System.out.print("Escolha: ");
             String opcao = sc.nextLine().toLowerCase();
-
             switch (opcao) {
                 case "p":
                 case "proxima":
@@ -137,7 +138,6 @@ public class MenuProdutos {
                         System.out.println("Você já está na última página.");
                     }
                     break;
-
                 case "v":
                 case "voltar":
                     if (paginaAtual > 0) {
@@ -146,20 +146,21 @@ public class MenuProdutos {
                         System.out.println("Você já está na primeira página.");
                     }
                     break;
-
+                case "e":
+                case "excluir":
+                    System.out.println("Digite o id");
                 case "s":
                 case "sair":
                     return;
-
                 default:
                     System.out.println("Opção inválida.");
             }
         }
     }
 
-    public static void exibirProdutos() {
+    public static void exibirProdutos(String modo) {
         List<Produto> produtos = LojaManager.listarProdutos();
-        exibirListaPaginada(produtos, "LISTA DE PRODUTOS");
+        exibirListaPaginada(produtos, "LISTA DE PRODUTOS", modo);
     }
 
     public static String limitarTexto(String texto, int limite) {
@@ -203,12 +204,10 @@ public class MenuProdutos {
         }
     }
 
-    private static void listarPorCategoria() {
+    private static void listarPorCategoria(String modo) {
         TypeCategoria categoria = escolherCategoria();
-
         LojaManager lojaManager = new LojaManager();
         List<Produto> produtos = lojaManager.buscarPorCategoria(categoria);
-
-        exibirListaPaginada(produtos, "PRODUTOS DA CATEGORIA " + categoria);
+        exibirListaPaginada(produtos, "PRODUTOS DA CATEGORIA " + categoria, modo);
     }
 }
