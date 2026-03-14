@@ -201,4 +201,43 @@ public class LojaManager {
 
         return produtos;
     }
+    public Produto buscarPorId(long id) {
+
+        String sql = """
+        SELECT p.id, p.nome, p.preco, p.quantidade,
+               c.id AS categoria_id, c.nome AS categoria_nome
+        FROM produto p
+        INNER JOIN categoria c ON c.id = p.idcategoria
+        WHERE p.id = ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Categoria categoria = new Categoria(
+                        rs.getLong("categoria_id"),
+                        rs.getString("categoria_nome")
+                );
+
+                Produto produto = new Produto();
+                produto.setId(rs.getLong("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setPreco(rs.getDouble("preco"));
+                produto.setEstoque(rs.getInt("quantidade"));
+                produto.setCategoria(categoria);
+
+                return produto;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

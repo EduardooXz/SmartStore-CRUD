@@ -51,7 +51,7 @@ public class MenuProdutos {
                 case "listar por categoria":
                 case "exibir um":
                 case "6":
-                    System.out.println("Exibir um produto");
+                    exibirProduto();
                     break;
                 case "sair":
                 case "7":
@@ -109,29 +109,29 @@ public class MenuProdutos {
 
             System.out.println("\n==================== " + titulo + " ====================");
             System.out.println("Página " + (paginaAtual + 1) + " de " + totalPaginas);
-            System.out.println("+----+----------------------+------------+----------+----------------+");
-            System.out.printf("| %-2s | %-20s | %-10s | %-8s | %-14s |%n",
-                    "ID", "NOME", "PREÇO", "ESTOQUE", "CATEGORIA");
-            System.out.println("+----+----------------------+------------+----------+----------------+");
+            System.out.println("+----+----------------------+------------+");
+            System.out.printf("| %-2s | %-20s | %-10s |%n",
+                    "ID", "NOME", "PREÇO");
+            System.out.println("+----+----------------------+------------+");
 
             for (int i = inicio; i < fim; i++) {
                 Produto produto = produtos.get(i);
 
-                System.out.printf("| %-2d | %-20s | %-10.2f | %-8d | %-14s |%n",
+                System.out.printf("| %-2d | %-20s | %-10.2f |%n",
                         produto.getId(),
                         limitarTexto(produto.getNome(), 20),
-                        produto.getPreco(),
-                        produto.getEstoque(),
-                        limitarTexto(produto.getCategoria().getNome(), 14));
+                        produto.getPreco());
+
             }
-            System.out.println("+----+----------------------+------------+----------+----------------+");
-            if(modo.equals("remover")) {
-                System.out.println("[P] Próxima página | [V] Voltar página | [E] Excluir | [S] Sair");
-            } else if(modo.equals("pesquisar")) {
-                System.out.println("[P] Próxima página | [V] Voltar página | [A] Acessar o produto | [S] Sair");
+            System.out.println("+----+----------------------+------------+");
+            if (modo.equals("remover")) {
+                System.out.println("[P] Próxima página | [V] Voltar página | [E] Excluir | [X] Exibir | [S] Sair");
+            } else if (modo.equals("pesquisar")) {
+                System.out.println("[P] Próxima página | [V] Voltar página | [X] Exibir | [S] Sair");
             } else {
-                System.out.println("[P] Próxima página | [V] Voltar página | [S] Sair");
+                System.out.println("[P] Próxima página | [V] Voltar página | [X] Exibir | [S] Sair");
             }
+
             System.out.print("Escolha: ");
             String opcao = sc.nextLine().toLowerCase();
             switch (opcao) {
@@ -166,6 +166,10 @@ public class MenuProdutos {
                     } else {
                         System.out.println("Produto não excluido");
                     }
+                    break;
+                case "x":
+                case "exibir":
+                    exibirProduto();
                     break;
                 case "s":
                 case "sair":
@@ -378,13 +382,34 @@ public class MenuProdutos {
             return;
         }
 
-        System.out.println("\nResultados:");
+        exibirListaPaginada(produtos, "RESULTADOS DA PESQUISA", "pesquisar");
+    }
+    private static void mostrarDetalhesProduto(Produto produto) {
+        System.out.println("\n===== DADOS DO PRODUTO =====");
+        System.out.println("ID: " + produto.getId());
+        System.out.println("Nome: " + produto.getNome());
+        System.out.println("Preço: " + produto.getPreco());
+        System.out.println("Categoria: " + produto.getCategoria().getNome());
+        System.out.println("Estoque: " + produto.getEstoque());
+    }
+    private static void exibirProduto() {
+        LojaManager lojaManager = new LojaManager();
 
-        for (Produto p : produtos) {
-            System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
+        System.out.print("Digite o ID do produto: ");
+        long id = Long.parseLong(sc.nextLine());
+
+        Produto produto = lojaManager.buscarPorId(id);
+
+        if (produto == null) {
+            System.out.println("Produto não encontrado.");
+            System.out.println("Pressione Enter para continuar...");
+            sc.nextLine();
+            return;
         }
 
+        mostrarDetalhesProduto(produto);
+
         System.out.println("\nPressione Enter para continuar...");
-        sc.nextLine();   // 👈 pausa aqui
+        sc.nextLine();
     }
 }
