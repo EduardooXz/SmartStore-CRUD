@@ -114,4 +114,17 @@ public class LojaManager {
         }
         return produtos;
     }
+
+    public static boolean excluirProduto(Long id) {
+        String sql = "DELETE FROM produto p where p.id = ?";
+        try(Connection conn = Conexao.conexaoBD()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setLong(1, id);
+            int linhas = stmt.executeUpdate();
+            return linhas > 0;
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
