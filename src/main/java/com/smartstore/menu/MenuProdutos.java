@@ -41,7 +41,8 @@ public class MenuProdutos {
                     break;
                 case "remover":
                 case "4":
-                    System.out.println("Remover Produto");
+                    String remover = "remover";
+                    exibirProdutos(remover);
                     break;
                 case "listar":
                 case "listar todos":
@@ -91,13 +92,21 @@ public class MenuProdutos {
         LojaManager.cadastrarProduto(produto);
     }
 
-    private static void exibirListaPaginada(List<Produto> produtos, String titulo, String modo) {
+    private static boolean verificarListaVazia(List<Produto> produtos) {
         if (produtos.isEmpty()) {
             System.out.println("\nNenhum produto encontrado.");
             System.out.println("Pressione Enter para voltar...");
             sc.nextLine();
+            return true;
+        }
+        return false;
+    }
+
+    private static void exibirListaPaginada(List<Produto> produtos, String titulo, String modo) {
+        if (verificarListaVazia(produtos)) {
             return;
-        }int itensPorPagina = 5;
+        };
+        int itensPorPagina = 5;
         int paginaAtual = 0;
         int totalPaginas = (int) Math.ceil((double) produtos.size() / itensPorPagina);
         while (true) {
@@ -148,7 +157,20 @@ public class MenuProdutos {
                     break;
                 case "e":
                 case "excluir":
-                    System.out.println("Digite o id");
+                    System.out.print("Digite o id: ");
+                    long id = sc.nextLong();
+                    sc.nextLine();
+                    boolean excluiu = LojaManager.excluirProduto(id);
+                    if (excluiu) {
+                        System.out.println("Produto excluido");
+                        produtos.removeIf(p -> p.getId() == id);
+                        if (verificarListaVazia(produtos)) {
+                            return;
+                        }
+                    } else {
+                        System.out.println("Produto não excluido");
+                    }
+                    break;
                 case "s":
                 case "sair":
                     return;
