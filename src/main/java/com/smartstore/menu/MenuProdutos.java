@@ -195,8 +195,8 @@ public class MenuProdutos {
         System.out.println("1 - ELETRONICOS");
         System.out.println("2 - ALIMENTOS");
         System.out.println("3 - ROUPAS");
-        System.out.println("4 - LIMPEZA");
-        System.out.println("5 - PAPELARIA");
+        System.out.println("4 - REMEDIOS");
+        System.out.println("5 - ELETRODOMESTICOS");
 
         int opcao = Integer.parseInt(sc.nextLine());
 
@@ -212,10 +212,10 @@ public class MenuProdutos {
                 return TypeCategoria.ROUPAS;
 
             case 4:
-                return TypeCategoria.LIMPEZA;
+                return TypeCategoria.REMEDIOS;
 
             case 5:
-                return TypeCategoria.PAPELARIA;
+                return TypeCategoria.ELETRODOMESTICOS;
 
             default:
                 throw new IllegalArgumentException("Categoria inválida");
