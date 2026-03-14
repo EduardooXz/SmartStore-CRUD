@@ -230,28 +230,33 @@ public class MenuProdutos {
     }
 
     private static void menuPesquisarProduto() {
-        String escolha;
-        String pesquisar = "pesquisar";
+
         while (true) {
+
             System.out.println("Pesquisar produto por:");
             System.out.println("1. Nome");
             System.out.println("2. Categoria");
             System.out.println("3. Sair");
             System.out.print("Sua opção: ");
-            escolha = sc.nextLine().toLowerCase();
+
+            String escolha = sc.nextLine().toLowerCase();
+
             switch (escolha) {
+
                 case "nome":
                 case "1":
-                    System.out.println("Pesquisar por nome");
+                    pesquisarProduto();
                     break;
+
                 case "categoria":
                 case "2":
                     listarPorCategoria("pesquisar");
-                    System.out.println("pesquisar por categoria");
                     break;
+
                 case "sair":
                 case "3":
-                    return;
+                    return; // volta para o menu anterior
+
                 default:
                     System.out.println("Opção inválida.");
             }
@@ -337,11 +342,10 @@ public class MenuProdutos {
 
     private static void pesquisarProduto() {
 
-        LojaManager lojaManager = new LojaManager();
-
         System.out.print("Digite o nome do produto: ");
         String nome = sc.nextLine();
 
+        LojaManager lojaManager = new LojaManager();
         List<Produto> produtos = lojaManager.buscarPorNome(nome);
 
         if (produtos.isEmpty()) {
@@ -354,5 +358,8 @@ public class MenuProdutos {
         for (Produto p : produtos) {
             System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
         }
+
+        System.out.println("\nPressione Enter para continuar...");
+        sc.nextLine();   // 👈 pausa aqui
     }
 }
