@@ -127,4 +127,78 @@ public class LojaManager {
         }
         return false;
     }
+
+    public void alterarProduto(Produto produto) {
+
+        String sql = """
+        UPDATE produto
+        SET nome = ?, preco = ?, quantidade = ?
+        WHERE id = ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNome());
+            stmt.setDouble(2, produto.getPreco());
+            stmt.setInt(3, produto.getEstoque());
+            stmt.setLong(4, produto.getId());
+
+            int linhas = stmt.executeUpdate();
+
+            if (linhas > 0) {
+                System.out.println("Produto atualizado com sucesso.");
+            } else {
+                System.out.println("Produto não encontrado.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Produto> buscarPorNome(String nome) {
+
+        List<Produto> produtos = new ArrayList<>();
+
+        String sql = """
+        SELECT p.id, p.nome, p.preco, p.quantidade,
+               c.id AS idcategoria, c.nome AS categoria_nome
+        FROM produto p
+        INNER JOIN categoria c ON c.id = p.idcategoria
+        WHERE p.nome LIKE ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + nome + "%");
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                Categoria categoria = new Categoria(
+                        rs.getLong("idcategoria"),
+                        rs.getString("categoria_nome")
+                );
+
+                Produto produto = new Produto(
+                        rs.getString("nome"),
+                        rs.getDouble("preco"),
+                        categoria,
+                        rs.getInt("quantidade")
+                );
+
+                produto.setId(rs.getLong("id"));
+
+                produtos.add(produto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return produtos;
+    }
 }
