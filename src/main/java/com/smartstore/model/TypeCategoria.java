@@ -4,8 +4,8 @@ public enum TypeCategoria {
     ELETRONICOS("ELETRONICOS"),
     ALIMENTOS("ALIMENTOS"),
     ROUPAS("ROUPAS"),
-    LIMPEZA("LIMPEZA"),
-    PAPELARIA("PAPELARIA");
+    REMEDIOS("REMEDIOS"),
+    ELETRODOMESTICOS("ELETRODOMESTICOS");
 
     private final String valorBanco;
 
