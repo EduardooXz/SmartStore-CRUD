@@ -132,7 +132,7 @@ public class LojaManager {
 
         String sql = """
         UPDATE produto
-        SET nome = ?, preco = ?, estoque = ?
+        SET nome = ?, preco = ?, quantidade = ?
         WHERE id = ?
     """;
 
@@ -155,5 +155,50 @@ public class LojaManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Produto> buscarPorNome(String nome) {
+
+        List<Produto> produtos = new ArrayList<>();
+
+        String sql = """
+        SELECT p.id, p.nome, p.preco, p.quantidade,
+               c.id AS idcategoria, c.nome AS categoria_nome
+        FROM produto p
+        INNER JOIN categoria c ON c.id = p.idcategoria
+        WHERE p.nome LIKE ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + nome + "%");
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                Categoria categoria = new Categoria(
+                        rs.getLong("idcategoria"),
+                        rs.getString("categoria_nome")
+                );
+
+                Produto produto = new Produto(
+                        rs.getString("nome"),
+                        rs.getDouble("preco"),
+                        categoria,
+                        rs.getInt("quantidade")
+                );
+
+                produto.setId(rs.getLong("id"));
+
+                produtos.add(produto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return produtos;
     }
 }

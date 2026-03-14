@@ -263,7 +263,7 @@ public class MenuProdutos {
         String escolha;
         while (true) {
             System.out.println("Listar produto por:");
-            System.out.println("1. todos");
+            System.out.println("1. Todos");
             System.out.println("2. Categoria");
             System.out.println("3. Sair");
             System.out.print("Sua opção: ");
@@ -290,13 +290,36 @@ public class MenuProdutos {
 
         LojaManager lojaManager = new LojaManager();
 
-        System.out.print("Digite o ID do produto que deseja alterar: ");
+        System.out.print("Digite o nome do produto: ");
+        String nome = sc.nextLine();
+
+        List<Produto> produtos = lojaManager.buscarPorNome(nome);
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado.");
+            return;
+        }
+
+        System.out.println("\nProdutos encontrados:");
+
+        for (Produto p : produtos) {
+            System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
+        }
+
+        System.out.print("\nDigite o ID do produto que deseja alterar: ");
         long id = Long.parseLong(sc.nextLine());
 
-        Produto produto = lojaManager.buscarPorId(id);
+        Produto produto = null;
+
+        for (Produto p : produtos) {
+            if (p.getId() == id) {
+                produto = p;
+                break;
+            }
+        }
 
         if (produto == null) {
-            System.out.println("Produto não encontrado.");
+            System.out.println("Produto inválido.");
             return;
         }
 
@@ -310,5 +333,26 @@ public class MenuProdutos {
         produto.setEstoque(Integer.parseInt(sc.nextLine()));
 
         lojaManager.alterarProduto(produto);
+    }
+
+    private static void pesquisarProduto() {
+
+        LojaManager lojaManager = new LojaManager();
+
+        System.out.print("Digite o nome do produto: ");
+        String nome = sc.nextLine();
+
+        List<Produto> produtos = lojaManager.buscarPorNome(nome);
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto encontrado.");
+            return;
+        }
+
+        System.out.println("\nResultados:");
+
+        for (Produto p : produtos) {
+            System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
+        }
     }
 }
