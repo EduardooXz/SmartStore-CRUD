@@ -33,7 +33,7 @@ public class MenuProdutos {
                     break;
                 case "alterar":
                 case "2":
-                    System.out.println("Alterar Produto");
+                    alterarProduto();
                     break;
                 case "pesquisar":
                 case "3":
@@ -284,5 +284,31 @@ public class MenuProdutos {
                     System.out.println("Opção inválida.");
             }
         }
+    }
+
+    private static void alterarProduto() {
+
+        LojaManager lojaManager = new LojaManager();
+
+        System.out.print("Digite o ID do produto que deseja alterar: ");
+        long id = Long.parseLong(sc.nextLine());
+
+        Produto produto = lojaManager.buscarPorId(id);
+
+        if (produto == null) {
+            System.out.println("Produto não encontrado.");
+            return;
+        }
+
+        System.out.print("Novo nome: ");
+        produto.setNome(sc.nextLine());
+
+        System.out.print("Novo preço: ");
+        produto.setPreco(Double.parseDouble(sc.nextLine()));
+
+        System.out.print("Novo estoque: ");
+        produto.setEstoque(Integer.parseInt(sc.nextLine()));
+
+        lojaManager.alterarProduto(produto);
     }
 }

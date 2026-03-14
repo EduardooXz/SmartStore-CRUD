@@ -127,4 +127,33 @@ public class LojaManager {
         }
         return false;
     }
+
+    public void alterarProduto(Produto produto) {
+
+        String sql = """
+        UPDATE produto
+        SET nome = ?, preco = ?, estoque = ?
+        WHERE id = ?
+    """;
+
+        try (Connection conn = Conexao.conexaoBD();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNome());
+            stmt.setDouble(2, produto.getPreco());
+            stmt.setInt(3, produto.getEstoque());
+            stmt.setLong(4, produto.getId());
+
+            int linhas = stmt.executeUpdate();
+
+            if (linhas > 0) {
+                System.out.println("Produto atualizado com sucesso.");
+            } else {
+                System.out.println("Produto não encontrado.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
