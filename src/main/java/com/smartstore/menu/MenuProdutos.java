@@ -295,10 +295,10 @@ public class MenuProdutos {
 
         LojaManager lojaManager = new LojaManager();
 
-        System.out.print("Digite o nome do produto: ");
-        String nome = sc.nextLine();
+        System.out.print("Digite parte do nome do produto: ");
+        String nomeBusca = sc.nextLine();
 
-        List<Produto> produtos = lojaManager.buscarPorNome(nome);
+        List<Produto> produtos = lojaManager.buscarPorNome(nomeBusca);
 
         if (produtos.isEmpty()) {
             System.out.println("Nenhum produto encontrado.");
@@ -306,7 +306,6 @@ public class MenuProdutos {
         }
 
         System.out.println("\nProdutos encontrados:");
-
         for (Produto p : produtos) {
             System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
         }
@@ -315,7 +314,6 @@ public class MenuProdutos {
         long id = Long.parseLong(sc.nextLine());
 
         Produto produto = null;
-
         for (Produto p : produtos) {
             if (p.getId() == id) {
                 produto = p;
@@ -328,16 +326,43 @@ public class MenuProdutos {
             return;
         }
 
-        System.out.print("Novo nome: ");
-        produto.setNome(sc.nextLine());
+        while (true) {
+            System.out.println("\nProduto selecionado:");
+            System.out.println(produto);
 
-        System.out.print("Novo preço: ");
-        produto.setPreco(Double.parseDouble(sc.nextLine()));
+            System.out.println("\nO que deseja alterar?");
+            System.out.println("1. Nome");
+            System.out.println("2. Preço");
+            System.out.println("3. Estoque");
+            System.out.println("4. Salvar e sair");
+            System.out.print("Escolha: ");
 
-        System.out.print("Novo estoque: ");
-        produto.setEstoque(Integer.parseInt(sc.nextLine()));
+            String opcao = sc.nextLine();
 
-        lojaManager.alterarProduto(produto);
+            switch (opcao) {
+                case "1":
+                    System.out.print("Novo nome: ");
+                    produto.setNome(sc.nextLine());
+                    break;
+
+                case "2":
+                    System.out.print("Novo preço: ");
+                    produto.setPreco(Double.parseDouble(sc.nextLine()));
+                    break;
+
+                case "3":
+                    System.out.print("Novo estoque: ");
+                    produto.setEstoque(Integer.parseInt(sc.nextLine()));
+                    break;
+
+                case "4":
+                    lojaManager.alterarProduto(produto);
+                    return;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
     }
 
     private static void pesquisarProduto() {
