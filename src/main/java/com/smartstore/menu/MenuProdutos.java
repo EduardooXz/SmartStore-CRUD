@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MenuProdutos {
-    private static String[] options = {"Inserir", "Alterar", "Pesquisar", "Remover", "Listar Todos", "Lista por Categoria", "Exibir um", "sair"};
+    private static String[] options = {"Inserir", "Alterar", "Pesquisar", "Remover", "Listar", "Exibir um", "sair"};
     private static Scanner sc = new Scanner(System.in);
 
     public static void exibirMenu() {
@@ -37,7 +37,7 @@ public class MenuProdutos {
                     break;
                 case "pesquisar":
                 case "3":
-                    System.out.println("Pesquisar Produto");
+                    menuPesquisarProduto();
                     break;
                 case "remover":
                 case "4":
@@ -45,22 +45,16 @@ public class MenuProdutos {
                     exibirProdutos(remover);
                     break;
                 case "listar":
-                case "listar todos":
                 case "5":
-                    String listar_todos = "listar todos";
-                    exibirProdutos(listar_todos);
+                    menuListarProduto();
                     break;
                 case "listar por categoria":
-                case "6":
-                    String lista_categoria = "listar categoria";
-                    listarPorCategoria(lista_categoria);
-                    break;
                 case "exibir um":
-                case "7":
+                case "6":
                     System.out.println("Exibir um produto");
                     break;
                 case "sair":
-                case "8":
+                case "7":
                     System.out.println("Saindo...");
                     return;
                 default:
@@ -133,6 +127,8 @@ public class MenuProdutos {
             System.out.println("+----+----------------------+------------+----------+----------------+");
             if(modo.equals("remover")) {
                 System.out.println("[P] Próxima página | [V] Voltar página | [E] Excluir | [S] Sair");
+            } else if(modo.equals("pesquisar")) {
+                System.out.println("[P] Próxima página | [V] Voltar página | [A] Acessar o produto | [S] Sair");
             } else {
                 System.out.println("[P] Próxima página | [V] Voltar página | [S] Sair");
             }
@@ -231,5 +227,62 @@ public class MenuProdutos {
         LojaManager lojaManager = new LojaManager();
         List<Produto> produtos = lojaManager.buscarPorCategoria(categoria);
         exibirListaPaginada(produtos, "PRODUTOS DA CATEGORIA " + categoria, modo);
+    }
+
+    private static void menuPesquisarProduto() {
+        String escolha;
+        String pesquisar = "pesquisar";
+        while (true) {
+            System.out.println("Pesquisar produto por:");
+            System.out.println("1. Nome");
+            System.out.println("2. Categoria");
+            System.out.println("3. Sair");
+            System.out.print("Sua opção: ");
+            escolha = sc.nextLine().toLowerCase();
+            switch (escolha) {
+                case "nome":
+                case "1":
+                    System.out.println("Pesquisar por nome");
+                    break;
+                case "categoria":
+                case "2":
+                    listarPorCategoria("pesquisar");
+                    System.out.println("pesquisar por categoria");
+                    break;
+                case "sair":
+                case "3":
+                    return;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    private static void menuListarProduto() {
+        String lista = "listar";
+        String escolha;
+        while (true) {
+            System.out.println("Listar produto por:");
+            System.out.println("1. todos");
+            System.out.println("2. Categoria");
+            System.out.println("3. Sair");
+            System.out.print("Sua opção: ");
+            escolha = sc.nextLine().toLowerCase();
+            switch (escolha) {
+                case "todos":
+                case "1":
+                    exibirProdutos(lista);
+                    break;
+                case "categoria":
+                case "2":
+                    listarPorCategoria(lista);
+                    break;
+                case "sair":
+                case "3":
+                    return;
+                default:
+                    System.out.println("Opção inválida.");
+            }
+        }
     }
 }
