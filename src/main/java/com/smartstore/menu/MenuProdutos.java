@@ -33,7 +33,7 @@ public class MenuProdutos {
                     break;
                 case "alterar":
                 case "2":
-                    alterarProduto();
+                    exibirProdutos("alterar");
                     break;
                 case "pesquisar":
                 case "3":
@@ -99,10 +99,12 @@ public class MenuProdutos {
     private static void exibirListaPaginada(List<Produto> produtos, String titulo, String modo) {
         if (verificarListaVazia(produtos)) {
             return;
-        };
+        }
+
         int itensPorPagina = 5;
         int paginaAtual = 0;
         int totalPaginas = (int) Math.ceil((double) produtos.size() / itensPorPagina);
+
         while (true) {
             int inicio = paginaAtual * itensPorPagina;
             int fim = Math.min(inicio + itensPorPagina, produtos.size());
@@ -110,8 +112,7 @@ public class MenuProdutos {
             System.out.println("\n==================== " + titulo + " ====================");
             System.out.println("Página " + (paginaAtual + 1) + " de " + totalPaginas);
             System.out.println("+----+----------------------+------------+");
-            System.out.printf("| %-2s | %-20s | %-10s |%n",
-                    "ID", "NOME", "PREÇO");
+            System.out.printf("| %-2s | %-20s | %-10s |%n", "ID", "NOME", "PREÇO");
             System.out.println("+----+----------------------+------------+");
 
             for (int i = inicio; i < fim; i++) {
@@ -121,59 +122,76 @@ public class MenuProdutos {
                         produto.getId(),
                         limitarTexto(produto.getNome(), 20),
                         produto.getPreco());
-
             }
+
             System.out.println("+----+----------------------+------------+");
+
             if (modo.equals("remover")) {
-                System.out.println("[P] Próxima página | [V] Voltar página | [E] Excluir | [X] Exibir | [S] Sair");
-            } else if (modo.equals("pesquisar")) {
-                System.out.println("[P] Próxima página | [V] Voltar página | [X] Exibir | [S] Sair");
+                System.out.println("[P] Próxima | [V] Voltar | [E] Excluir | [X] Exibir | [S] Sair");
             } else {
-                System.out.println("[P] Próxima página | [V] Voltar página | [X] Exibir | [S] Sair");
+                System.out.println("[P] Próxima | [V] Voltar | [A] Alterar | [S] Sair");
             }
 
             System.out.print("Escolha: ");
             String opcao = sc.nextLine().toLowerCase();
+
             switch (opcao) {
+
                 case "p":
-                case "proxima":
-                    if (paginaAtual < totalPaginas - 1) {
-                        paginaAtual++;
-                    } else {
-                        System.out.println("Você já está na última página.");
-                    }
+                    if (paginaAtual < totalPaginas - 1) paginaAtual++;
+                    else System.out.println("Última página.");
                     break;
+
                 case "v":
-                case "voltar":
-                    if (paginaAtual > 0) {
-                        paginaAtual--;
-                    } else {
-                        System.out.println("Você já está na primeira página.");
-                    }
+                    if (paginaAtual > 0) paginaAtual--;
+                    else System.out.println("Primeira página.");
                     break;
-                case "e":
-                case "excluir":
-                    System.out.print("Digite o id: ");
-                    long id = sc.nextLong();
-                    sc.nextLine();
-                    boolean excluiu = ProdutoService.excluirProduto(id);
-                    if (excluiu) {
-                        System.out.println("Produto excluido");
-                        produtos.removeIf(p -> p.getId() == id);
-                        if (verificarListaVazia(produtos)) {
-                            return;
+
+                case "a": // 🔥 NOVO: ALTERAR
+                    System.out.print("Digite o ID do produto: ");
+                    long idAlterar = Long.parseLong(sc.nextLine());
+
+                    Produto produtoSelecionado = null;
+
+                    for (Produto p : produtos) {
+                        if (p.getId() == idAlterar) {
+                            produtoSelecionado = p;
+                            break;
                         }
+                    }
+
+                    if (produtoSelecionado == null) {
+                        System.out.println("Produto não encontrado.");
                     } else {
-                        System.out.println("Produto não excluido");
+                        alterarProduto(produtoSelecionado);
                     }
                     break;
+
+                case "e": // remover
+                    System.out.print("Digite o ID: ");
+                    long id = Long.parseLong(sc.nextLine());
+
+                    boolean excluiu = ProdutoService.excluirProduto(id);
+
+                    if (excluiu) {
+                        System.out.println("Produto excluído!");
+                        produtos.removeIf(p -> p.getId() == id);
+
+                        if (verificarListaVazia(produtos)) return;
+
+                        totalPaginas = (int) Math.ceil((double) produtos.size() / itensPorPagina);
+                    } else {
+                        System.out.println("Erro ao excluir.");
+                    }
+                    break;
+
                 case "x":
-                case "exibir":
                     exibirProduto();
                     break;
+
                 case "s":
-                case "sair":
                     return;
+
                 default:
                     System.out.println("Opção inválida.");
             }
@@ -295,43 +313,11 @@ public class MenuProdutos {
         }
     }
 
-    private static void alterarProduto() {
-
+    private static void alterarProduto(Produto produto) {
         ProdutoService lojaManager = new ProdutoService();
 
-        System.out.print("Digite parte do nome do produto: ");
-        String nomeBusca = sc.nextLine();
-
-        List<Produto> produtos = lojaManager.buscarPorNome(nomeBusca);
-
-        if (produtos.isEmpty()) {
-            System.out.println("Nenhum produto encontrado.");
-            return;
-        }
-
-        System.out.println("\nProdutos encontrados:");
-        for (Produto p : produtos) {
-            System.out.println("ID: " + p.getId() + " | Nome: " + p.getNome());
-        }
-
-        System.out.print("\nDigite o ID do produto que deseja alterar: ");
-        long id = Long.parseLong(sc.nextLine());
-
-        Produto produto = null;
-        for (Produto p : produtos) {
-            if (p.getId() == id) {
-                produto = p;
-                break;
-            }
-        }
-
-        if (produto == null) {
-            System.out.println("Produto inválido.");
-            return;
-        }
-
         while (true) {
-            System.out.println("\nProduto selecionado:");
+            System.out.println("\n===== EDITANDO PRODUTO =====");
             System.out.println(produto);
 
             System.out.println("\nO que deseja alterar?");
@@ -361,6 +347,7 @@ public class MenuProdutos {
 
                 case "4":
                     lojaManager.alterarProduto(produto);
+                    System.out.println("✅ Produto atualizado com sucesso!");
                     return;
 
                 default:
