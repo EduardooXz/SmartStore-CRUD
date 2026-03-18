@@ -393,12 +393,12 @@ public class MenuProdutos {
         System.out.println("Estoque: " + produto.getEstoque());
     }
     private static void exibirProduto() {
-        LojaManager lojaManager = new LojaManager();
+        ProdutoService produtoService = new ProdutoService();
 
         System.out.print("Digite o ID do produto: ");
         long id = Long.parseLong(sc.nextLine());
 
-        Produto produto = lojaManager.buscarPorId(id);
+        Produto produto = produtoService.buscarPorId(id);
 
         if (produto == null) {
             System.out.println("Produto não encontrado.");
