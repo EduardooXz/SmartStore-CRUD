@@ -113,11 +113,14 @@ CREATE TABLE produto (
 );
 3. Configurar conexão
 
-No arquivo de conexão (Conexao.java), ajuste:
+Renomear o arquivo database.properties.example para database.properties
 
-String url = "jdbc:mysql://localhost:3306/smartstore";
-String user = "root";
-String password = "sua_senha";
+No arquivo database.properties ajuste:
+
+db.url=jdbc:mysql://localhost:3306/nome_do_banco
+db.user=seu_usuario
+db.password=sua_senha
+
 4. Instalar dependências
 mvn clean install
 5. Executar o projeto
