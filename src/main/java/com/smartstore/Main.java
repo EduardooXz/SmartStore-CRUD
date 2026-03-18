@@ -1,12 +1,12 @@
 package com.smartstore;
 
 import com.smartstore.menu.MenuPrincipal;
-import com.smartstore.service.CategoriaManager;
+import com.smartstore.service.CategoriaService;
 
 public class Main {
     public static void main(String[] args) {
         //Inicializa as categorias padrão ao iniciar aplicação
-        CategoriaManager.cadastrarCategoria();
+        CategoriaService.cadastrarCategoria();
         MenuPrincipal.selecionarOptions();
     }
 }

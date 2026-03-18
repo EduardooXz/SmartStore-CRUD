@@ -1,6 +1,6 @@
 package com.smartstore.menu;
-import com.smartstore.dto.RelatorioCategoria;
-import com.smartstore.service.LojaManager;
+import com.smartstore.dto.RelatorioCategoriaDTO;
+import com.smartstore.service.ProdutoService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -47,8 +47,8 @@ public class MenuPrincipal {
         System.out.println("=========== RELATÓRIO DE ESTOQUE ===========\n");
         int totalProdutos = 0, totalEstoque = 0;
         double totalValor = 0;
-        List<RelatorioCategoria> relatorioCategorias = LojaManager.gerarRelatorioPorCategoria();
-        for(RelatorioCategoria relatorio : relatorioCategorias) {
+            List<RelatorioCategoriaDTO> relatorioCategorias = ProdutoService.gerarRelatorioPorCategoria();
+        for(RelatorioCategoriaDTO relatorio : relatorioCategorias) {
             System.out.println("Categoria: " + relatorio.getCategoria());
             System.out.println("Produtos cadastrados: " + relatorio.getTotalProduto());
             System.out.println("Quantidade em estoque: " + relatorio.getTotalEstoque());

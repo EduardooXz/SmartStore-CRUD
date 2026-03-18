@@ -1,16 +1,14 @@
 package com.smartstore.dto;
 
-import com.smartstore.model.Categoria;
-
-public class RelatorioCategoria {
+public class RelatorioCategoriaDTO {
     private String categoria;
     private int totalProduto;
     private int totalEstoque;
     private double valorTotal;
 
-    public RelatorioCategoria() {}
+    public RelatorioCategoriaDTO() {}
 
-    public RelatorioCategoria(String categoria, int totalProduto, int totalEstoque, double valorTotal) {
+    public RelatorioCategoriaDTO(String categoria, int totalProduto, int totalEstoque, double valorTotal) {
         this.categoria = categoria;
         this.totalProduto = totalProduto;
         this.totalEstoque = totalEstoque;

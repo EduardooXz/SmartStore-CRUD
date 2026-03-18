@@ -5,7 +5,7 @@ import com.smartstore.model.Categoria;
 
 import java.sql.*;
 
-public class CategoriaManager {
+public class CategoriaService {
     //Defini os tipos de categorias
     private static final String[] LIST_CATEGORIAS = {"ELETRONICOS", "MOVEIS", "ROUPAS", "REMEDIOS", "ELETRODOMESTICOS"};
 

@@ -2,8 +2,8 @@ package com.smartstore.menu;
 
 import com.smartstore.model.Categoria;
 import com.smartstore.model.Produto;
-import com.smartstore.service.CategoriaManager;
-import com.smartstore.service.LojaManager;
+import com.smartstore.service.CategoriaService;
+import com.smartstore.service.ProdutoService;
 import com.smartstore.model.TypeCategoria;
 
 import java.util.List;
@@ -73,17 +73,17 @@ public class MenuProdutos {
         int estoque = Integer.parseInt(sc.nextLine());
         int categoriaId;
         while (true) {
-            CategoriaManager.listarCategorias();
+            CategoriaService.listarCategorias();
             System.out.print("Escolha o ID da categoria: ");
             categoriaId = Integer.parseInt(sc.nextLine());
-            if (CategoriaManager.categoriaExiste(categoriaId)) {
+            if (CategoriaService.categoriaExiste(categoriaId)) {
                 break;
             }
             System.out.println("Categoria inválida.");
         }
-        Categoria categoria = CategoriaManager.buscarCategoriaPorId(categoriaId);
+        Categoria categoria = CategoriaService.buscarCategoriaPorId(categoriaId);
         Produto produto = new Produto(nome, preco, categoria, estoque);
-        LojaManager.cadastrarProduto(produto);
+        ProdutoService.cadastrarProduto(produto);
     }
 
     private static boolean verificarListaVazia(List<Produto> produtos) {
@@ -156,7 +156,7 @@ public class MenuProdutos {
                     System.out.print("Digite o id: ");
                     long id = sc.nextLong();
                     sc.nextLine();
-                    boolean excluiu = LojaManager.excluirProduto(id);
+                    boolean excluiu = ProdutoService.excluirProduto(id);
                     if (excluiu) {
                         System.out.println("Produto excluido");
                         produtos.removeIf(p -> p.getId() == id);
@@ -181,7 +181,7 @@ public class MenuProdutos {
     }
 
     public static void exibirProdutos(String modo) {
-        List<Produto> produtos = LojaManager.listarProdutos();
+        List<Produto> produtos = ProdutoService.listarProdutos();
         exibirListaPaginada(produtos, "LISTA DE PRODUTOS", modo);
     }
 
@@ -228,7 +228,7 @@ public class MenuProdutos {
 
     private static void listarPorCategoria(String modo) {
         TypeCategoria categoria = escolherCategoria();
-        LojaManager lojaManager = new LojaManager();
+        ProdutoService lojaManager = new ProdutoService();
         List<Produto> produtos = lojaManager.buscarPorCategoria(categoria);
         exibirListaPaginada(produtos, "PRODUTOS DA CATEGORIA " + categoria, modo);
     }
@@ -297,7 +297,7 @@ public class MenuProdutos {
 
     private static void alterarProduto() {
 
-        LojaManager lojaManager = new LojaManager();
+        ProdutoService lojaManager = new ProdutoService();
 
         System.out.print("Digite parte do nome do produto: ");
         String nomeBusca = sc.nextLine();
@@ -374,7 +374,7 @@ public class MenuProdutos {
         System.out.print("Digite o nome do produto: ");
         String nome = sc.nextLine();
 
-        LojaManager lojaManager = new LojaManager();
+        ProdutoService lojaManager = new ProdutoService();
         List<Produto> produtos = lojaManager.buscarPorNome(nome);
 
         if (produtos.isEmpty()) {

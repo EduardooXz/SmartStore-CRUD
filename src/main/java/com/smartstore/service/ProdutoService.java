@@ -1,7 +1,7 @@
 package com.smartstore.service;
 
 import com.smartstore.database.Conexao;
-import com.smartstore.dto.RelatorioCategoria;
+import com.smartstore.dto.RelatorioCategoriaDTO;
 import com.smartstore.model.Produto;
 import com.smartstore.model.Categoria;
 import com.smartstore.model.TypeCategoria;
@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class LojaManager {
+public class ProdutoService {
 
     public static void cadastrarProduto(Produto produto) {
         String sql = "INSERT INTO produto (nome, preco, quantidade, idcategoria) values (?,?,?,?)";
@@ -53,8 +53,8 @@ public class LojaManager {
         return produtos;
     }
 
-    public static List<RelatorioCategoria> gerarRelatorioPorCategoria() {
-        List<RelatorioCategoria> relatorio = new ArrayList<>();
+    public static List<RelatorioCategoriaDTO> gerarRelatorioPorCategoria() {
+        List<RelatorioCategoriaDTO> relatorio = new ArrayList<>();
         String sql = """
             SELECT 
                 c.nome AS categoria,
@@ -69,7 +69,7 @@ public class LojaManager {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                RelatorioCategoria relatorioCategoria = new RelatorioCategoria(
+                RelatorioCategoriaDTO relatorioCategoria = new RelatorioCategoriaDTO(
                         rs.getString("categoria"),
                         rs.getInt("total_produtos"),
                         rs.getInt("total_estoque"),
